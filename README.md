@@ -69,17 +69,84 @@ JWT_SECRET=your_jwt_secret_key
 
 Keycloak kullanacaksan `.env` içine Keycloak endpoint ve client ayarlarını da ekle.
 
+## 🐳 Docker
+
+Projeyi yerel makinanda tek komutla ayağa kaldırmak için **Docker** kullanabilirsin.  
+Bu setup şunları içerir:
+- PostgreSQL veritabanı
+- NestJS Backend API
+- React + Vite Frontend
+- Keycloak Kimlik Yönetimi
+
 ---
 
-## 🐳 Docker (Opsiyonel)
+### Çalıştırmak için
 
 ```bash
 docker compose up --build
 ```
 
-Gelecekte `docker-compose.yml` ekleyip PostgreSQL + Keycloak + Backend + Frontend için tam entegrasyon planlanacaktır.
+İlk çalıştırmada backend, frontend ve Keycloak için **Dockerfile** üzerinden build işlemi yapılır.  
+Sonraki başlatmalarda sadece:
+
+```bash
+docker compose up
+```
+
+kullanman yeterli olur.
 
 ---
+
+### 🗂️ Servisler
+
+| Servis         | Açıklama        | URL                                                               |
+| -------------- | --------------- | ----------------------------------------------------------------- |
+| **Frontend**   | React + Vite    | [http://localhost:3000](http://localhost:3000)                    |
+| **Backend**    | NestJS API      | [http://localhost:3333](http://localhost:3333)                    |
+| **PostgreSQL** | Veritabanı      | `localhost:5432` (user/pass: `traceco2`)                          |
+| **Keycloak**   | Kimlik Yönetimi | [http://localhost:8080](http://localhost:8080) <br> admin / admin |
+
+---
+
+### ⚙️ Ortam Değişkenleri
+
+Backend için örnek `.env`:
+```env
+DATABASE_URL=postgres://traceco2:traceco2@postgres:5432/traceco2
+KEYCLOAK_URL=http://keycloak:8080
+JWT_SECRET=your_secret_key_here
+```
+
+---
+
+### 🔑 Keycloak Yapılandırması
+
+İlk kez çalıştırdığında:
+1. [http://localhost:8080](http://localhost:8080) adresinden Keycloak admin paneline `admin/admin` ile giriş yap.
+2. Realm oluştur, client tanımla, roller ve kullanıcıları yapılandır.
+3. Backend Keycloak ayarlarını bu URL üzerinden yönet.
+
+---
+
+### 🗃️ Komutlar
+
+İlk kurulum:
+```bash
+docker compose up --build
+```
+
+Durdurmak için:
+```bash
+docker compose down
+```
+
+Veri kaybını engellemek için PostgreSQL `volumes` tanımı kullanılır.
+
+---
+
+Hazır! 🚀
+
+----
 
 ## ✅ Komutlar
 

@@ -14,6 +14,22 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.3
+    container_name: traceco2_keycloak
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/traceco2
+      KC_DB_USERNAME: traceco2
+      KC_DB_PASSWORD: traceco2
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgres
+
   backend:
     build:
       context: .
@@ -21,8 +37,10 @@ services:
     container_name: traceco2_backend
     depends_on:
       - postgres
+      - keycloak
     environment:
       DATABASE_URL: postgres://traceco2:traceco2@postgres:5432/traceco2
+      KEYCLOAK_URL: http://keycloak:8080
     ports:
       - '3333:3333'
 
@@ -35,6 +53,7 @@ services:
       - '3000:3000'
     depends_on:
       - backend
+      - keycloak
 
 volumes:
   db-data:
